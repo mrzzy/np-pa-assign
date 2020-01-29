@@ -1,9 +1,12 @@
 #
 # NP PA Assignment
-# Dataset Metadata
+# Dataset
 #
 
+import os
+import numpy as np
 
+# Dataset Columns
 cat_features = [
     "Mjob",
     "Fjob",
@@ -44,5 +47,7 @@ num_features = [
     "G1",
     "G2"
 ]
+
+input_features = cat_features + bin_features + num_features
 
 target_var = "G3"
