@@ -27,7 +27,8 @@ bin_features = [
     "internet",
     "nursery",
     "higher",
-    "romantic"
+    "romantic",
+    "subject"
 ]
 
 num_features = [
