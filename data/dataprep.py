@@ -12,9 +12,13 @@ from . import dataset
 # Prepared Dataset Columns
 cat_features = dataset.cat_features[:]
 bin_features = dataset.bin_features[:] + ["subject"]
-num_features = dataset.num_features[:] + ["logAbsences"]
+num_features = dataset.num_features[:] + [
+    "logAbsences", "absencesBinned", "alc",
+    "freetimeAlc", "gooutAlc", "goFriendAlc", 
+    "failSqrt", "Pedu", "Psup", "Pedusup"
+]
 
-input_features = dataset.input_features[:]
+input_features = cat_features + bin_features + num_features
 
 # target variables
 classify_target_var = "G3Binned"
