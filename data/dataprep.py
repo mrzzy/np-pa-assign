@@ -12,12 +12,35 @@ from sklearn import base
 from . import dataset
 
 # Prepared Dataset Columns
-cat_features = dataset.cat_features[:]
-bin_features = dataset.bin_features[:] + ["subject"]
-num_features = dataset.num_features[:] + [
-    "logAbsences", "absencesBinned", "alc", "ageAlc", "goCouple",
-    "freeAlc", "gooutAlc", "goFreeAlc", "goFreeAlcAge",
-    "failSqrt", "agePow", "Pedu", "Psup"
+cat_features = [
+    "Mjob",
+    "Fjob",
+    "guardian",
+    "reason"
+]
+
+bin_features = [
+    "school",
+    "address",
+    "famsize",
+    "schoolsup",
+    "activities",
+    "paid",
+    "internet",
+    "nursery",
+    "higher",
+    "romantic",
+    "subject"
+]
+
+num_features = [
+    "G1",
+    "G2",
+    "goFreeAlcAge",
+    "alcStudyAge",
+    "locVal",
+    "agePow",
+    "failSqrt",
 ]
 
 input_features = cat_features + bin_features + num_features
@@ -58,27 +81,16 @@ class FeatureExtractor(base.TransformerMixin):
     # y - not used 
     def transform(self, df, y=None):
         df = df.copy()
-        # absences
-        df["logAbsences"] = np.log1p(df["absences"])
-        df["absencesBinned"] = pd.cut(df["logAbsences"], 
-                                      [0,  2, 2.5, 3.5, float("inf")],
-                                      labels=[1, 2, 3, 4], right=True, 
-                                      include_lowest=True).astype("int")
         # vices
-        df["alc"] = (df["Dalc"] + df["Walc"])
-        df["freeAlc"] = df["alc"] * df["freetime"]
-        df["gooutAlc"] = df["alc"] * df["goout"]
-        df["ageAlc"] = df["age"] * df["alc"]
-        df["goFreeAlc"] = df["goout"] * df["freetime"] * df["alc"]
+        df["alc"]= df["Dalc"] + df["Walc"]
         df["goFreeAlcAge"] = df["goout"] * df["freetime"] * df["alc"] * df["age"] 
+        df["alcStudyAge"] = df["alc"] * df["age"] / df["studytime"] 
         
         # negative factors
         df["failSqrt"] = np.sqrt(df["failures"]) 
         df["agePow"] = df["age"] ** 6.5
-        df["goCouple"] = df["goout"] *  df["romantic"].cat.codes
         
-        # family
-        df["Pedu"] = df["Medu"] ** 3 + df["Fedu"] 
-        df["Psup"] = df["famrel"] ** 2 * df["famsize"].cat.codes
+        # family/location
+        df["locVal"] = df["Medu"] / df["traveltime"]
         
         return df
